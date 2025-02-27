@@ -19,7 +19,7 @@ jobs:
         uses: microsoft/setup-msbuild@v1.0.2
 
       - name: Build Solution
-        run: msbuild ./${{ env.APPLICATION_NAME }}.sln /restore /p:Configuration=Release
+        run: msbuild ./${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}.sln /restore /p:Configuration=Release
 
       - name: Create and Sign the APK
         run: msbuild ${{ env.APPLICATION_NAME }}.Android\${{ env.APPLICATION_NAME }}.Android.csproj /t:SignAndroidPackage /p:Configuration=Release /p:OutputPath=bin\Release\
