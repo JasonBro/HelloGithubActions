@@ -1,35 +1,36 @@
-name: Build Xamarin.Android app
+name: Build android app
 
-on: [push]
+on:
+  push:
+    branches: [ master ]
 
 jobs:
+  # Build App
   build:
-
-    runs-on: macos-latest
-
-    steps:
-
-    - name: setup-xamarin
-      uses: maxim-lobanov/setup-xamarin@v1
-      with:
-        mono-version: latest # specify version in '<major>.<minor>' format
-        xamarin-ios-version: latest # specify version in '<major>' format
-        xamarin-mac-version: latest # specify 'latest' keyword to pick up the latest available version
-        xamarin-android-version: latest # specify full version; it is not recomended option because your pipeline can be broken suddenly in future
-        xcode-version: latest # set the latest available Xcode 11
+    runs-on: windows-latest
     
-    - uses: actions/checkout@v4
-    - name: Set default Xamarin SDK versions
-      run: |
-        $VM_ASSETS/select-xamarin-sdk-v2.sh --mono=6.10 --android=13.0
+    env:
+      SERVICE_APP_KEY: ${{ secrets.SERVICE_APP_KEY }}
+      APPLICATION_NAME: HelloAction
+      PACKAGE_NAME: com.companyname.myapplication
+      
+    steps:
+      - uses: actions/checkout@v4
 
-    - name: Setup .NET Core SDK 5.0.x
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: '5.0.x'
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v1.0.2
 
-    - name: Install dependencies
-      run: nuget restore HelloAction/HelloAction.sln
+      - name: Build Solution
+        run: msbuild ./${{ env.APPLICATION_NAME }}.sln /restore /p:Configuration=Release
 
-    - name: Build
-      run: msbuild HelloAction/HelloAction/HelloAction.Android/HelloAction.Android.csproj /t:PackageForAndroid /p:Configuration=Debug
+      - name: Create and Sign the APK
+        run: msbuild ${{ env.APPLICATION_NAME }}.Android\${{ env.APPLICATION_NAME }}.Android.csproj /t:SignAndroidPackage /p:Configuration=Release /p:OutputPath=bin\Release\
+
+      - name: List folder content
+        run: dir ${{ env.APPLICATION_NAME }}.Android\bin\Release
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: MyApplication.apk
+          path: ${{ env.APPLICATION_NAME }}.Android\bin\Release\${{ PACKAGE_NAME }}-Signed.apk
