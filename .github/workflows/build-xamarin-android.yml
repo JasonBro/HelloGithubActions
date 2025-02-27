@@ -31,4 +31,4 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: MyApplication.apk
-          path: ${{ env.APPLICATION_NAME }}.Android\bin\Release\${{ PACKAGE_NAME }}-Signed.apk
+          path: ${{ env.APPLICATION_NAME }}.Android\bin\Release\${{ env.PACKAGE_NAME }}-Signed.apk
