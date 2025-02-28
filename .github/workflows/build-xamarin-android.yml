@@ -26,15 +26,29 @@ jobs:
       - name: Build Solution
         run: msbuild ${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}.sln /restore /p:Configuration=Release
 
-      - name: Create and Sign the APK
+      - name: Create AAB
         run: msbuild ${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}.Android\${{ env.APPLICATION_NAME }}.Android.csproj /t:SignAndroidPackage /p:Configuration=Release /p:OutputPath=bin\Release\
 
       - name: List folder content
         run: dir ${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}.Android/bin/Release
+
+      - name: Upload AAB
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJsonPlainText: ${{ SERVICE_ACCOUNT_JSON }}
+          packageName: ${{ env.PACKAGE_NAME }}
+          releaseFiles: ${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}.Android\${{ env.APPLICATION_NAME }}/bin/Release/${{ env.PACKAGE_NAME }}.aab
+          track: qa
+          status: inProgress
+          # inAppUpdatePriority: 2
+          # userFraction: 0.33
+          # whatsNewDirectory: distribution/whatsnew
+          # mappingFile: app/build/outputs/mapping/release/mapping.txt
+          # debugSymbols: app/intermediates/merged_native_libs/release/out/lib
     
       - name: Upload AAB
         uses: italankin/google-play-aab-uploader@1.3
         with:
           package-name: ${{ env.PACKAGE_NAME }}
-          aab-path: ${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}.Android\${{ env.APPLICATION_NAME }}/bin/Release/${{ env.PACKAGE_NAME }}.aab
+          aab-path: 
           key-json: '${{ secrets.SERVICE_KEY_JSON }}'
