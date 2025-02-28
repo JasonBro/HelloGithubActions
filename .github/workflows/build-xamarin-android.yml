@@ -35,7 +35,7 @@ jobs:
       - name: Upload AAB
         uses: r0adkll/upload-google-play@v1
         with:
-          serviceAccountJsonPlainText: ${{ SERVICE_ACCOUNT_JSON }}
+          serviceAccountJsonPlainText: ${{ secrets.SERVICE_ACCOUNT_JSON }}
           packageName: ${{ env.PACKAGE_NAME }}
           releaseFiles: ${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}.Android\${{ env.APPLICATION_NAME }}/bin/Release/${{ env.PACKAGE_NAME }}.aab
           track: qa
@@ -46,9 +46,3 @@ jobs:
           # mappingFile: app/build/outputs/mapping/release/mapping.txt
           # debugSymbols: app/intermediates/merged_native_libs/release/out/lib
     
-      - name: Upload AAB
-        uses: italankin/google-play-aab-uploader@1.3
-        with:
-          package-name: ${{ env.PACKAGE_NAME }}
-          aab-path: 
-          key-json: '${{ secrets.SERVICE_KEY_JSON }}'
