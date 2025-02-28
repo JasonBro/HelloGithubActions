@@ -39,7 +39,7 @@ jobs:
           packageName: ${{ env.PACKAGE_NAME }}
           releaseFiles: ${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}.Android\${{ env.APPLICATION_NAME }}/bin/Release/${{ env.PACKAGE_NAME }}.aab
           track: qa
-          status: inProgress
+          # status: inProgress
           # inAppUpdatePriority: 2
           # userFraction: 0.33
           # whatsNewDirectory: distribution/whatsnew
