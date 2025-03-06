@@ -51,11 +51,6 @@
     <AndroidPackageFormat>aab</AndroidPackageFormat>
     <AndroidUseAapt2>true</AndroidUseAapt2>
     <AndroidCreatePackagePerAbi>false</AndroidCreatePackagePerAbi>
-    <AndroidKeyStore>true</AndroidKeyStore>
-    <AndroidSigningKeyStore>D:\Users\jason\upload-keystore.jks</AndroidSigningKeyStore>
-    <AndroidSigningStorePass>~MeZ}2fwn*bi</AndroidSigningStorePass>
-    <AndroidSigningKeyAlias>upload</AndroidSigningKeyAlias>
-    <AndroidSigningKeyPass>~MeZ}2fwn*bi</AndroidSigningKeyPass>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Mono.Android" />
