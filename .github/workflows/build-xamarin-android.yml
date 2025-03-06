@@ -26,10 +26,13 @@ jobs:
         uses: microsoft/setup-msbuild@v2
 
       - name: Update AndroidManifest.xml
-        uses: Mudlet/xmlstarlet-action@master
+        uses: damienaicheh/update-android-version-manifest-action@v1.1.0
         with:
-          args: ed -L --update "manifest@android:versionCode" -v "${{ github.run_number }}" "${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}.Android/Properties/AndroidManifest.xml"
-          
+          android-manifest-path: '${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}.Android/Properties'
+          version-code: ${{ github.run_number }}
+          version-name: '1.0'
+          print-file: true
+         
       - name: Build Solution
         run: msbuild ${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}.sln /restore /p:Configuration=Release
 
