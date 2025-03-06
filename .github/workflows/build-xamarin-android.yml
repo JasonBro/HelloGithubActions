@@ -26,14 +26,23 @@ jobs:
       - name: Setup MSBuild
         uses: microsoft/setup-msbuild@v2
 
-      - name: Build Solution
-        run: msbuild ${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}.sln /restore /p:Configuration=Release
+      # - name: Build Solution
+      #  run: msbuild ${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}.sln /restore /p:Configuration=Release
 
       - name: Create AAB
         run: msbuild ${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}.Android\${{ env.APPLICATION_NAME }}.Android.csproj /t:SignAndroidPackage /p:Configuration=Release /p:OutputPath=bin\Release\
 
       - name: List folder content
         run: dir ${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}.Android/bin/Release
+
+      - name: Sign Release
+        uses: r0adkll/sign-android-release@v1
+        with:
+          releaseDirectory: ${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}.Android/bin/Release
+          signingKeyBase64: ${{ secrets.ANDROID_KEYSTORE }}
+          keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
+          alias: ${{ secrets.ANDROID_DEVS_ALIAS }}
+          keyPassword: ${{ secrets.ANDROID_DEVS_ALIAS_PASSWORD }}
 
       - name: Upload AAB
         uses: r0adkll/upload-google-play@v1
