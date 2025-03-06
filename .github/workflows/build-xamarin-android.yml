@@ -28,6 +28,11 @@ jobs:
       - name: Build Solution
         run: msbuild ${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}.sln /restore /p:Configuration=Release
 
+      - name: Update AndroidManifest.xml
+        uses: Mudlet/xmlstarlet-action@master
+        with:
+          args: ed -L --update "manifest@android:versionCode" -v "${{ github.run_number }}" "${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}.Android/Properties/AndroidManifest.xml"
+          
       - name: Create AAB
         run: msbuild ${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}.Android\${{ env.APPLICATION_NAME }}.Android.csproj /t:SignAndroidPackage /p:Configuration=Release /p:OutputPath=bin\Release\
 
