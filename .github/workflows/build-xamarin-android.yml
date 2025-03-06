@@ -49,7 +49,7 @@ jobs:
           serviceAccountJsonPlainText: ${{ secrets.SERVICE_ACCOUNT_JSON }}
           packageName: ${{ env.PACKAGE_NAME }}
           releaseFiles: ${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}.Android/bin/Release/com.companyname.helloaction.aab
-          track: qa
+          track: internal
           # status: inProgress
           # inAppUpdatePriority: 2
           # userFraction: 0.33
