@@ -10,15 +10,17 @@ jobs:
     env:
       SERVICE_APP_KEY: ${{ secrets.SERVICE_APP_KEY }}
       APPLICATION_NAME: HelloAction
-      PACKAGE_NAME: com.companyname.myapplication
+      PACKAGE_NAME: com.capability_systems.helloaction
       
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-java@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Java SDK
+        uses: actions/setup-java@v4
         with:
           distribution: 'temurin' # See 'Supported distributions' for available options
           java-version: '17'
-          # cache: 'gradle'
           
       - name: Setup MSBuild
         uses: microsoft/setup-msbuild@v2
@@ -26,17 +28,32 @@ jobs:
       - name: Build Solution
         run: msbuild ${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}.sln /restore /p:Configuration=Release
 
-      - name: Create and Sign the APK
-        run: msbuild ${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}.Android\${{ env.APPLICATION_NAME }}.Android.csproj /p:Configuration=Release /p:OutputPath=bin\Release\
+      - name: Create AAB
+        run: msbuild ${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}.Android\${{ env.APPLICATION_NAME }}.Android.csproj /t:SignAndroidPackage /p:Configuration=Release /p:OutputPath=bin\Release\
 
       - name: List folder content
-        run: dir ${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}.Android\bin\Release
+        run: dir ${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}.Android/bin/Release
 
-      - name: List object folder content
-        run: dir ${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}.Android\obj\Release\android\bin
-
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
+      - name: Sign Release
+        uses: r0adkll/sign-android-release@v1
         with:
-          name: MyApplication.apk
-          path: ${{ env.APPLICATION_NAME }}.Android\bin\Release\${{ env.PACKAGE_NAME }}-Signed.apk
+          releaseDirectory: ${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}.Android/bin/Release
+          signingKeyBase64: ${{ secrets.ANDROID_KEYSTORE }}
+          keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
+          alias: ${{ secrets.ANDROID_DEVS_ALIAS }}
+          keyPassword: ${{ secrets.ANDROID_DEVS_ALIAS_PASSWORD }}
+
+      - name: Upload AAB
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJsonPlainText: ${{ secrets.SERVICE_ACCOUNT_JSON }}
+          packageName: ${{ env.PACKAGE_NAME }}
+          releaseFiles: ${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}.Android/bin/Release/com.companyname.helloaction.aab
+          track: internal
+          # status: inProgress
+          # inAppUpdatePriority: 2
+          # userFraction: 0.33
+          # whatsNewDirectory: distribution/whatsnew
+          # mappingFile: app/build/outputs/mapping/release/mapping.txt
+          # debugSymbols: app/intermediates/merged_native_libs/release/out/lib
+    
