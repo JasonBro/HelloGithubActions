@@ -25,6 +25,17 @@ jobs:
       - name: Setup MSBuild
         uses: microsoft/setup-msbuild@v2
 
+      - name: Update AndroidManifest.xml
+        run: |
+         ((Get-Content -Path ${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}.Android/Properties/AndroidManifest.xml -Raw) -replace 'android:versionCode="1"','android:versionCode="${{ github.run_number }}"') | Set-Content -Path ${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}.Android/Properties/AndroidManifest.xml
+      
+#        uses: damienaicheh/update-android-version-manifest-action@v1.1.0
+#        with:
+#          android-manifest-path: '${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}.Android/Properties'
+#          version-code: ${{ github.run_number }}
+#          version-name: '1.0'
+#          print-file: true
+         
       - name: Build Solution
         run: msbuild ${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}.sln /restore /p:Configuration=Release
 
@@ -50,7 +61,7 @@ jobs:
           packageName: ${{ env.PACKAGE_NAME }}
           releaseFiles: ${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}.Android/bin/Release/${{ env.PACKAGE_NAME }}.aab
           track: internal
-          # status: inProgress
+          status: draft
           # inAppUpdatePriority: 2
           # userFraction: 0.33
           # whatsNewDirectory: distribution/whatsnew
