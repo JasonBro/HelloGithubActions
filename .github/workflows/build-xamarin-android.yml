@@ -27,7 +27,7 @@ jobs:
 
       - name: Update AndroidManifest.xml
         run: |
-         (Get-Content -Path ${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}.Android/Properties/AndroidManifest.xml -Raw) -replace 'android:versionCode="1"','android:versionCode="${{ github.run_number }}"' | Set-Content -Path ${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}.Android/Properties/AndroidManifest.xml -Raw)
+         ((Get-Content -Path ${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}.Android/Properties/AndroidManifest.xml -Raw) -replace 'android:versionCode="1"','android:versionCode="${{ github.run_number }}"') | Set-Content -Path ${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}.Android/Properties/AndroidManifest.xml
       
 #        uses: damienaicheh/update-android-version-manifest-action@v1.1.0
 #        with:
