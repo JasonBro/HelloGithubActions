@@ -61,7 +61,7 @@ jobs:
           packageName: ${{ env.PACKAGE_NAME }}
           releaseFiles: ${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}.Android/bin/Release/${{ env.PACKAGE_NAME }}.aab
           track: internal
-          # status: inProgress
+          status: draft
           # inAppUpdatePriority: 2
           # userFraction: 0.33
           # whatsNewDirectory: distribution/whatsnew
