@@ -1,6 +1,6 @@
 name: Build android app
 
-on: [push]
+# on: [push]
 
 jobs:
   # Build App
