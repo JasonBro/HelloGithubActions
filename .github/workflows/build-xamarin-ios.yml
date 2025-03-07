@@ -35,14 +35,15 @@ jobs:
     - uses: actions/checkout@v4
 
     - name: Build
-      run: mono '/tmp/msbuild/MSBuild.dll' ${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}.sln
+      run: mono '/tmp/msbuild/MSBuild.dll' ${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}.csproj ${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}.iOS/${{ env.APPLICATION_NAME }}.iOS.csproj /restore /p:Configuration=Release
+      # run: mono '/tmp/msbuild/MSBuild.dll' ${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}.sln
 
 
-    - name: Restore dependencies with dotnet restore
-      run: dotnet restore ${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}.sln
+#    - name: Restore dependencies with dotnet restore
+#      run: dotnet restore ${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}.sln
 
-    - name: Install dependencies
-      run: nuget restore ${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}.sln
+#    - name: Install dependencies
+#      run: nuget restore ${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}.sln
 
-    - name: Build
-      run: msbuild ${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}.iOS\${{ env.APPLICATION_NAME }}.iOS.csproj /p:Configuration=Debug /p:Platform=iPhoneSimulator /t:Rebuild
+#    - name: Build
+#      run: msbuild ${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}.iOS\${{ env.APPLICATION_NAME }}.iOS.csproj /p:Configuration=Debug /p:Platform=iPhoneSimulator /t:Rebuild
