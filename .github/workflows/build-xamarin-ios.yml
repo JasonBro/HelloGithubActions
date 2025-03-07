@@ -35,7 +35,7 @@ jobs:
     - uses: actions/checkout@v4
 
     - name: Restore dependencies with dotnet restore
-      run: dotnet restore
+      run: dotnet restore ${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}.sln
 
     - name: Install dependencies
       run: nuget restore ${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}.sln
