@@ -11,32 +11,21 @@ jobs:
       APPLICATION_NAME: HelloAction
 
     steps:
-#    - name: setup-xamarin
-#      uses: maxim-lobanov/setup-xamarin@v1
-#      with:
-#        mono-version: '6.6' # specify version in '<major>.<minor>' format
-#        xamarin-ios-version: '13' # specify version in '<major>' format
-#        xamarin-mac-version: latest # specify 'latest' keyword to pick up the latest available version
-#        xamarin-android-version: '10.1.3.7' # specify full version; it is not recomended option because your pipeline can be broken suddenly in future
-#        xcode-version: '11.x' # set the latest available Xcode 11
-    
-#    - name: Set default Xamarin SDK versions
-#      run: |
-#        $VM_ASSETS/select-xamarin-sdk-v2.sh --mono=6.12 --ios=14.10
+    - name: Install Xamarin.iOS
+      run: brew install --cask xamarin-ios
 
-    - name: Set default Xamarin SDK versions
-      run: |
-        brew install --cask xamarin-ios
+    - name: Download Visual Studio for Mac
+      run: curl https://download.visualstudio.microsoft.com/download/pr/ceb0ea3f-4db8-46b4-8dc3-8049d27c0107/91eb158e928097dcb6e42ece2db7ebac/visualstudioformac-17.6.7.417-arm64.dmg -o /tmp/vsformac.dmg
+      
+    - name: Mount Visual Studio for Mac dmg
+      run: hdiutil attach /tmp/vsformac.dmg
 
+    - name: Extract MSBuild
+      run: cp -R /Volumes/Visual\ Studio/Visual\ Studio.app/Contents/MonoBundle/MSBuild/Current/bin /tmp/msbuild
+        
     - uses: maxim-lobanov/setup-xcode@v1
       with:
         xcode-version: '15.4.0'
-
-#    - name: Set default Xcode 12.3
-#      run: |
-#        XCODE_ROOT=/Applications/Xcode_12.3.0.app
-#        echo "MD_APPLE_SDK_ROOT=$XCODE_ROOT" >> $GITHUB_ENV
-#        sudo xcode-select -s $XCODE_ROOT
 
     - name: Setup .NET Core SDK 5.0.x
       uses: actions/setup-dotnet@v4
