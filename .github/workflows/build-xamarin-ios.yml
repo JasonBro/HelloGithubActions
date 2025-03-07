@@ -39,7 +39,7 @@ jobs:
       # run: mono '/tmp/msbuild/MSBuild.dll' ${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}.sln
 
     - name: Build ${{ env.APPLICATION_NAME }}.iOS
-      run: mono '/tmp/msbuild/MSBuild.dll'  ${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}.iOS/${{ env.APPLICATION_NAME }}.iOS.csproj /restore /p:Configuration=Release
+      run: mono '/tmp/msbuild/MSBuild.dll'  ${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}.iOS/${{ env.APPLICATION_NAME }}.iOS.csproj /restore /p:Configuration=Release /t:Build /p:Platform='iPhone' /p:BuildIpa=true /p:EnableCodeSigning=false
 
 #    - name: Restore dependencies with dotnet restore
 #      run: dotnet restore ${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}.sln
