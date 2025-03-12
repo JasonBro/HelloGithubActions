@@ -1,0 +1,74 @@
+name: Build Xamarin.iOS app
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: macos-14
+
+    env:
+      APPLICATION_NAME: HelloAction
+
+    steps:
+
+    - name: Setup iOS Certificates
+      uses: apple-actions/import-codesign-certs@v1
+      with: 
+        p12-file-base64: ${{ secrets.IOS_CERTIFICATES_P12 }}
+        p12-password: ${{ secrets.IOS_CERTIFICATES_P12_PASSWORD }}
+        keychain: github-actions-xamarin
+        keychain-password: ''
+
+    - name: Setup iOS Provisioning Profiles
+      uses: apple-actions/download-provisioning-profiles@v1
+      with:
+        bundle-id: 'com.capability-systems.HelloAction'
+        profile-type: 'IOS_APP_STORE'
+        issuer-id: ${{ secrets.IOS_APPSTORE_ISSUER_ID }}
+        api-key-id: ${{ secrets.IOS_APPSTORE_KEY_ID }}
+        api-private-key: ${{ secrets.IOS_APPSTORE_PRIVATE_KEY }}
+
+    - name: Install Xamarin.iOS
+      run: brew install --cask xamarin-ios
+
+    - name: Download Visual Studio for Mac
+      run: curl https://download.visualstudio.microsoft.com/download/pr/ceb0ea3f-4db8-46b4-8dc3-8049d27c0107/91eb158e928097dcb6e42ece2db7ebac/visualstudioformac-17.6.7.417-arm64.dmg -o /tmp/vsformac.dmg
+      
+    - name: Mount Visual Studio for Mac dmg
+      run: hdiutil attach /tmp/vsformac.dmg
+
+    - name: Extract MSBuild
+      run: cp -R /Volumes/Visual\ Studio/Visual\ Studio.app/Contents/MonoBundle/MSBuild/Current/bin /tmp/msbuild
+        
+    - uses: maxim-lobanov/setup-xcode@v1
+      with:
+        xcode-version: '15.4.0'
+
+    - name: Setup .NET Core SDK 6.0.x
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '6.0.x'
+
+    - uses: actions/checkout@v4
+
+    - name: Set iOS version 
+      run: |
+        # /usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString ${{ secrets.APP_VERSION }}" ./GitHubActions.iOS/Info.plist
+        /usr/libexec/PlistBuddy -c "Set :CFBundleVersion ${{ github.run_number }}" ${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}.iOS/Info.plist
+    
+    - name: Build ${{ env.APPLICATION_NAME }}
+      run: mono '/tmp/msbuild/MSBuild.dll' ${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}.csproj /restore /p:Configuration=Release
+      # run: mono '/tmp/msbuild/MSBuild.dll' ${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}.sln
+
+    - name: Build ${{ env.APPLICATION_NAME }}.iOS
+      run: mono '/tmp/msbuild/MSBuild.dll'  ${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}.iOS/${{ env.APPLICATION_NAME }}.iOS.csproj /verbosity:Diagnostic /restore /p:Configuration=Release /t:Build /p:Platform='iPhone' /p:BuildIpa=true /p:EnableCodeSigning=true
+
+#    - name: Restore dependencies with dotnet restore
+#      run: dotnet restore ${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}.sln
+
+#    - name: Install dependencies
+#      run: nuget restore ${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}.sln
+
+#    - name: Build
+#      run: msbuild ${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}.iOS\${{ env.APPLICATION_NAME }}.iOS.csproj /p:Configuration=Debug /p:Platform=iPhoneSimulator /t:Rebuild

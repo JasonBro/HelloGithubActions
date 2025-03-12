@@ -8,7 +8,6 @@ jobs:
     runs-on: windows-latest
     
     env:
-      SERVICE_APP_KEY: ${{ secrets.SERVICE_APP_KEY }}
       APPLICATION_NAME: HelloAction
       PACKAGE_NAME: com.capability_systems.helloaction
       
