@@ -11,6 +11,24 @@ jobs:
       APPLICATION_NAME: HelloAction
 
     steps:
+
+    - name: Setup iOS Certificates
+      uses: apple-actions/import-codesign-certs@v1
+      with: 
+        p12-file-base64: ${{ secrets.IOS_CERTIFICATES_P12 }}
+        p12-password: ${{ secrets.IOS_CERTIFICATES_P12_PASSWORD }}
+        keychain: github-actions-xamarin
+        keychain-password: ''
+
+    - name: Setup iOS Provisioning Profiles
+      uses: apple-actions/download-provisioning-profiles@v1
+      with:
+        bundle-id: 'dev.sbyte.githubactionsxamarin'
+        profile-type: 'IOS_APP_ADHOC'
+        issuer-id: ${{ secrets.IOS_APPSTORE_ISSUER_ID }}
+        api-key-id: ${{ secrets.IOS_APPSTORE_KEY_ID }}
+        api-private-key: ${{ secrets.IOS_APPSTORE_PRIVATE_KEY }}
+
     - name: Install Xamarin.iOS
       run: brew install --cask xamarin-ios
 
@@ -34,6 +52,11 @@ jobs:
 
     - uses: actions/checkout@v4
 
+    - name: Set iOS version 
+      run: |
+        # /usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString ${{ secrets.APP_VERSION }}" ./GitHubActions.iOS/Info.plist
+        /usr/libexec/PlistBuddy -c "Set :CFBundleVersion ${{ github.run_number }}" ${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}.iOS/Info.plist
+    
     - name: Build ${{ env.APPLICATION_NAME }}
       run: mono '/tmp/msbuild/MSBuild.dll' ${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}.csproj /restore /p:Configuration=Release
       # run: mono '/tmp/msbuild/MSBuild.dll' ${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}.sln
