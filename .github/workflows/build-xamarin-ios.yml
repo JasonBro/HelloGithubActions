@@ -62,7 +62,15 @@ jobs:
       # run: mono '/tmp/msbuild/MSBuild.dll' ${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}.sln
 
     - name: Build ${{ env.APPLICATION_NAME }}.iOS
-      run: mono '/tmp/msbuild/MSBuild.dll'  ${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}.iOS/${{ env.APPLICATION_NAME }}.iOS.csproj /verbosity:Diagnostic /restore /p:Configuration=Release /t:Build /p:Platform='iPhone' /p:BuildIpa=true /p:EnableCodeSigning=true
+      run: mono '/tmp/msbuild/MSBuild.dll'  ${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}.iOS/${{ env.APPLICATION_NAME }}.iOS.csproj /restore /p:Configuration=Release /t:Build /p:Platform='iPhone' /p:BuildIpa=true /p:EnableCodeSigning=true
+    
+    - name: 'Upload app to TestFlight'
+      uses: apple-actions/upload-testflight-build@v1
+      with: 
+        app-path: '${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}.iOS/bin/iPhone/Release//HelloAction.iOS.ipa' 
+        issuer-id: ${{ secrets.IOS_APPSTORE_ISSUER_ID }}
+        api-key-id: ${{ secrets.IOS_APPSTORE_KEY_ID }}
+        api-private-key: ${{ secrets.IOS_APPSTORE_PRIVATE_KEY }}
 
 #    - name: Restore dependencies with dotnet restore
 #      run: dotnet restore ${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}.sln
