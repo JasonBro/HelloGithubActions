@@ -24,7 +24,7 @@ jobs:
       uses: apple-actions/download-provisioning-profiles@v1
       with:
         bundle-id: 'com.capability-systems.HelloAction'
-        profile-type: 'IOS_APP_ADHOC'
+        profile-type: 'IOS_APP_STORE'
         issuer-id: ${{ secrets.IOS_APPSTORE_ISSUER_ID }}
         api-key-id: ${{ secrets.IOS_APPSTORE_KEY_ID }}
         api-private-key: ${{ secrets.IOS_APPSTORE_PRIVATE_KEY }}
