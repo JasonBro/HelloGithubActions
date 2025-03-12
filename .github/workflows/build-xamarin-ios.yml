@@ -67,7 +67,7 @@ jobs:
     - name: 'Upload app to TestFlight'
       uses: apple-actions/upload-testflight-build@v1
       with: 
-        app-path: '${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}.iOS/bin/iPhone/Release//HelloAction.iOS.ipa' 
+        app-path: '${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}/${{ env.APPLICATION_NAME }}.iOS/bin/iPhone/Release/HelloAction.iOS.ipa' 
         issuer-id: ${{ secrets.IOS_APPSTORE_ISSUER_ID }}
         api-key-id: ${{ secrets.IOS_APPSTORE_KEY_ID }}
         api-private-key: ${{ secrets.IOS_APPSTORE_PRIVATE_KEY }}
