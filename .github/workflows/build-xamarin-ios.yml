@@ -43,7 +43,7 @@ jobs:
         
     - uses: maxim-lobanov/setup-xcode@v1
       with:
-        xcode-version: '15.4.0'
+        xcode-version: 'latest'
 
     - name: Setup .NET Core SDK 6.0.x
       uses: actions/setup-dotnet@v4
